@@ -1,0 +1,1 @@
+Configure existing image_01.png as site and install icon.
