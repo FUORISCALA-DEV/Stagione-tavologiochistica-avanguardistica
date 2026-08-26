@@ -1,0 +1,57 @@
+[
+  {
+    "file": "assets/images/image_01.png",
+    "mime": "image/png",
+    "bytes": 3403679
+  },
+  {
+    "file": "assets/images/image_02.webp",
+    "mime": "image/webp",
+    "bytes": 50384
+  },
+  {
+    "file": "assets/images/image_03.webp",
+    "mime": "image/webp",
+    "bytes": 252988
+  },
+  {
+    "file": "assets/images/image_04.webp",
+    "mime": "image/webp",
+    "bytes": 297196
+  },
+  {
+    "file": "assets/images/image_05.webp",
+    "mime": "image/webp",
+    "bytes": 245446
+  },
+  {
+    "file": "assets/images/image_06.webp",
+    "mime": "image/webp",
+    "bytes": 306876
+  },
+  {
+    "file": "assets/audio/audio_01.m4a",
+    "mime": "audio/mp4",
+    "bytes": 1625157
+  },
+  {
+    "file": "assets/audio/audio_02.m4a",
+    "mime": "audio/mp4",
+    "bytes": 3552641
+  },
+  {
+    "file": "assets/docs/document_01.pdf",
+    "mime": "application/pdf",
+    "bytes": 173962
+  },
+  {
+    "file": "assets/docs/document_02.pdf",
+    "mime": "application/pdf",
+    "bytes": 5831
+  },
+  {
+    "file": "assets/docs/document_03.pdf",
+    "mime": "application/pdf",
+    "bytes": 29734
+  }
+]

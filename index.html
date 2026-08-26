@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ruota Tavologiochistica</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body class="intro-locked">
+<div class="intro-stage splash-stage" id="splashStage" role="button" tabindex="0" aria-label="Tocca per continuare">
+  <div class="splash-inner">
+    <div class="fuoriscala-presenta"><span class="fuori">FUORISCALA</span><span class="presenta">PRESENTA</span></div>
+    <div class="splash-tap">TOCCA PER CONTINUARE</div>
+  </div>
+</div>
+<div class="intro-stage portal-stage" id="portalStage">
+  <div class="portal-inner">
+    <img class="portal-logo" src="assets/images/image_01.png" alt="Stagione Tavologiochistica Avanguardistica">
+    <div class="portal-copy"><b>Due Pretendenti. Una Stagione.</b><br>Una quantità francamente eccessiva di regolamenti.</div>
+    <button class="enter-vanguard" id="enterVanguard">ENTRA NELL'AVANGUARDIA</button>
+    <div class="portal-disclaimer">La Federazione non si assume responsabilità per rivalità, accuse di culo o improvvise interpretazioni del regolamento.</div>
+  </div>
+</div>
+
+<div class="app-topbar">
+ <div><div class="brand-mini">FEDERAZIONE TAVOLOGIOCHISTICA</div><div class="session-badge" id="sessionBadge">Nessuna stagione attiva</div></div>
+ <nav class="app-nav"><button data-screen="home" class="active">HOME</button><button data-screen="wheel">RUOTA</button><button data-screen="rules">REGOLAMENTO</button><button data-screen="guide">COME FUNZIONA</button><button data-screen="calculator">CALCOLATORE AWARDS</button></nav>
+</div>
+<section class="app-screen active" id="screen-home"><div class="home-shell"><div class="hero-card"><div class="kicker">TORNEO TAVOLOGIOCHISTICO AVANGUARDISTICO</div><h1>LA STAGIONE<br>COMINCIA QUI.</h1><p class="home-copy">Due Pretendenti. Una stagione. Tornei, Ruota Tavologiochistica, Partita dei Polli, Coppa e quattro Award regolamentari.</p><div class="hero-actions"><button id="newTournamentBtn">NUOVO TORNEO</button><button class="secondary" id="continueBtn">CONTINUA STAGIONE</button><button class="secondary" data-go="rules">LEGGI IL REGOLAMENTO</button></div></div>
+<div class="new-panel hidden" id="newPanel"><h2>Ratifica iniziale</h2><p class="hint">I dati inseriti qui saranno riportati automaticamente nella pagina di ratifica del Regolamento.</p><div class="form-grid"><div class="form-field"><label>Pretendente I</label><input id="newP1" placeholder="Nome"></div><div class="form-field"><label>Pretendente II</label><input id="newP2" placeholder="Nome"></div><div class="form-field"><label>Data inizio stagione</label><input id="newStart" type="date"></div><div class="form-field"><label>Data fine stagione</label><input id="newEnd" type="date"><label class="date-choice"><input id="endLater" type="checkbox"> Sceglila più avanti</label></div><div class="form-field"><label>Data prevista premiazione</label><input id="newAward" type="date"><label class="date-choice"><input id="awardLater" type="checkbox"> Sceglila più avanti</label></div><div class="form-field full"><button id="createTournament">APRI LA STAGIONE</button></div></div></div>
+<div class="guide-grid"><div class="guide-box"><b>1 · Configura</b><p>Inserisci i due Pretendenti e le date della Stagione.</p></div><div class="guide-box"><b>2 · Scegli i giochi</b><p>Usa il Regolamento e inserisci nella Ruota i giochi del Torneo.</p></div><div class="guide-box"><b>3 · Gioca</b><p>La Ruota registra ordine, risultati e punteggio della sessione.</p></div></div></div></section>
+<section class="app-screen" id="screen-wheel">
+<div class="wrap">
+<header><div class="kicker">FEDERAZIONE TAVOLOGIOCHISTICA</div><h1>RUOTA TAVOLOGIOCHISTICA</h1><div class="subtitle">Strumento ufficialmente imparziale per il Gioco Dispari, l'ordine di gioco e la Finalissima Bottasecchistica Tavologiochistica</div><div class="player-badge" id="playerBadge"></div></header>
+<div class="grid">
+<section class="card wheel-box">
+<div class="canvas-wrap"><canvas id="wheel" width="900" height="900"></canvas><div class="pointer" id="pointer"></div><div class="hub" id="hub" tabindex="0">GIRA LA RUOTA</div></div>
+<div class="controls"><button id="spinBtn">GIRA LA RUOTA</button><button id="shuffleBtn" class="secondary">MESCOLA ORDINE</button><button id="clearBtn" class="danger">SVUOTA</button></div>
+<div class="result" id="result">Inserisci almeno un gioco e procedi all'estrazione.</div>
+</section>
+<aside class="card side"><h2>Giochi in ruota</h2><div class="input-row"><input id="gameInput" type="text" placeholder="Scrivi un gioco e premi Invio" autocomplete="off"><button id="addBtn">+</button></div><div class="hint">Puoi inserire i giochi direttamente da tastiera. Invio = aggiungi.<br>
+Per stabilire un ordine completo, premi <b>GIOCHIAMO</b> dopo ogni estrazione: il gioco viene rimosso e la Ruota procede con quelli rimasti.</div><div class="list" id="gameList"></div><div class="count" id="count"></div></aside>
+</div>
+<section class="card history-card">
+<div class="scoreboard" id="scoreboard"></div>
+<div class="history-head-actions">
+  <div>
+    <h2 style="margin:0">Storico giochi</h2>
+    <div class="current-tournament-note" id="currentTournamentNote">Torneo 1 in corso</div>
+  </div>
+  <button class="end-tournament-btn" id="endTournamentBtn">FINE TORNEO</button>
+</div>
+<div class="history-empty" id="historyEmpty">Nessun gioco ancora disputato nel Torneo corrente.</div>
+<div class="history-list" id="historyList"></div>
+</section>
+<div class="tournament-season-counter" id="tournamentSeasonCounter">
+  <div class="label">VITTORIE TORNEI NELLA STAGIONE</div>
+  <div class="score" id="tournamentSeasonScore">—</div>
+</div>
+<div class="footer-note">L'esito della Ruota Tavologiochistica non è impugnabile per sfortuna, ingiustizia percepita o «era ovvio che usciva il tuo».</div>
+</div>
+
+</section>
+<div class="win-overlay" id="winOverlay" aria-hidden="true">
+  <div class="win-popup" id="winPopup" role="dialog" aria-modal="true" aria-labelledby="winName">
+    <div class="confetti" id="confetti"></div>
+    <div class="win-kicker">ESITO UFFICIALE DELLA RUOTA</div>
+    <div class="win-name" id="winName"></div>
+    <div class="win-rule"></div>
+    <div class="win-actions">
+      <button id="closeWin">CHIUDI</button>
+      <button id="removeWin" class="remove-win">GIOCHIAMO</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="setup-overlay" id="setupOverlay">
+  <div class="setup-popup" role="dialog" aria-modal="true" aria-labelledby="setupTitle">
+    <div class="win-kicker">IDENTIFICAZIONE DEI PRETENDENTI</div>
+    <h2 id="setupTitle">Chi sta giocando?</h2>
+    <p>Inserisci i nomi dei due Pretendenti prima di aprire ufficialmente i lavori della Ruota.</p>
+    <div class="setup-fields">
+      <input id="player1Input" type="text" placeholder="Pretendente I" autocomplete="off">
+      <input id="player2Input" type="text" placeholder="Pretendente II" autocomplete="off">
+    </div>
+    <button id="startSession">INIZIA</button>
+  </div>
+</div>
+
+<div class="winner-overlay hidden" id="winnerOverlay">
+  <div class="winner-popup" role="dialog" aria-modal="true" aria-labelledby="winnerTitle">
+    <div class="win-kicker">VERBALE DELLA PARTITA</div>
+    <h2 id="winnerTitle">Chi ha vinto?</h2>
+    <p id="winnerGameLabel"></p>
+    <div class="winner-buttons">
+      <button id="winnerP1"></button>
+      <button id="winnerP2"></button>
+    </div>
+  </div>
+</div>
+
+
+<section class="app-screen" id="screen-rules"><div class="reader-shell rules-reader">
+<div class="reader-tools"><button id="downloadRules">SCARICA VERSIONE DA STAMPARE</button><button class="secondary" data-go="guide">COME SI STAMPA?</button></div>
+<div class="rules-intro"><div class="eyebrow">FEDERAZIONE TAVOLOGIOCHISTICA</div><h1>Regolamento ufficiale</h1><p>Versione digitale continua: niente PDF da aprire e niente pagine da sfogliare. Scorri normalmente come una pagina web.</p></div>
+<nav class="rules-toc"><a href="#titolo-i">I · Stagione</a><a href="#titolo-ii">II · Torneo</a><a href="#titolo-iii">III · Giochi</a><a href="#titolo-iv">IV · Polli</a><a href="#titolo-v">V · Classifica</a><a href="#titolo-vi">VI · Award</a><a href="#titolo-vii">VII · Principi</a><a href="#ratifica">Ratifica</a></nav>
+<article class="rules-document"><p class="rules-preamble"><b>Premessa regolamentare.</b> Il presente Regolamento disciplina lo svolgimento della Stagione Tavologiochistica Avanguardistica, dei singoli Tornei, delle relative classifiche e dell'assegnazione dei riconoscimenti. Le disposizioni qui contenute sono da considerarsi definitive fino a quando i due Pretendenti non decidano, con l'inutile solennità richiesta dalla materia, di modificarle.</p>
+<h2 class="rules-title" id="titolo-i">TITOLO I - LA STAGIONE</h2><section class="rule-article"><h3>Art. 1 - La Stagione</h3><ol><li>La Stagione costituisce il periodo ufficiale entro il quale vengono disputati i Tornei validi ai fini della classifica e dei Premi.</li><li>La Stagione può svolgersi in qualunque periodo dell'anno. I Pretendenti stabiliscono preventivamente data di inizio e data di fine nella ratifica del presente Regolamento.</li><li>Nessun Torneo iniziato successivamente alla data di fine stabilita produce effetti sulla Stagione conclusa, salvo proroga concordata da entrambi.</li></ol></section><section class="rule-article"><h3>Art. 2 - La Premiazione</h3><ol><li>La conclusione della Stagione comporta la proclamazione del Campione, l'assegnazione della Coppa Tavologiochistica e degli Award.</li><li>La data prevista della Premiazione è stabilita dai Pretendenti all'apertura della Stagione e riportata nella ratifica finale.</li><li>Le date possono essere derogate di comune accordo per comprovate esigenze organizzative, logistiche, digestive, lavorative, familiari, sopravvenuta constatazione che «si è fatta una certa» o altre cause di analoga gravità.</li></ol></section>
+<h2 class="rules-title" id="titolo-ii">TITOLO II - IL TORNEO TAVOLOGIOCHISTICO AVANGUARDISTICO</h2><section class="rule-article"><h3>Art. 3 - Natura avanguardistica</h3><ol><li>Il Torneo Tavologiochistico Avanguardistico nasce dalla convergenza regolamentare tra il Torneo Tavologiochistico e il Torneo Cartogiochistico.</li><li>Il Torneo può comprendere liberamente giochi appartenenti a entrambe le discipline, ma non può essere composto esclusivamente da giochi cartogiochistici.</li><li>La presenza di almeno un gioco tavologiochistico è condizione necessaria al mantenimento della qualifica di Avanguardistico.</li><li>La Tabella Parametristica identifica i giochi cartogiochistici mediante la voce <b>Carte: SI</b>.</li><li>Jaipur e Love Letter non sono considerati cartogiochistici in quanto prevedono, oltre alle carte, componenti fisiche non meramente accessorie che partecipano al sistema di gioco e/o alla determinazione del risultato.</li></ol></section><section class="rule-article"><h3>Art. 4 - Composizione</h3><ol><li>Ogni Torneo è composto da un numero dispari di giochi. Il formato ordinario è di cinque giochi.</li><li>È ammesso un numero dispari differente quando durata o complessità lo rendano opportuno.</li><li>Se, per durata, complessità o manifesta pesantezza, il Torneo è costituito da una sola partita, assume la denominazione ufficiale di <b>Torneo Tavologiochistico Bottasecchistico Avanguardistico</b>. La singola partita costituisce l'intero Torneo.</li><li>Tutti i giochi previsti devono essere disputati anche quando il vincitore sia già matematicamente determinato.</li><li>Il Torneo può essere chiuso anticipatamente solo per decisione concorde dovuta a inderogabili esigenze della vita reale: sonno, fame, lavoro il mattino dopo, impegni dimenticati, persone che chiedono inspiegabilmente attenzione o constatazione che «si è fatta una certa».</li></ol></section>
+<h2 class="rules-title" id="titolo-iii">TITOLO III - LA SELEZIONE DEI GIOCHI</h2><section class="rule-article"><h3>Art. 5 - Diritto di scelta</h3><ol><li>Nel formato ordinario a cinque giochi, ciascun Pretendente seleziona due giochi.</li><li>I quattro giochi entrano automaticamente nel programma del Torneo.</li><li>Il quinto, denominato Gioco Dispari, è determinato secondo l'Art. 6.</li></ol></section><section class="rule-article"><h3>Art. 6 - Il Gioco Dispari e la Ruota Tavologiochistica</h3><ol><li>Il diritto di scegliere il Gioco Dispari spetta al Pretendente che, all'inizio del Torneo, si trovi in svantaggio nel numero complessivo di Tornei vinti nella Stagione.</li><li>In situazione di parità il Gioco Dispari viene scelto di comune accordo. In assenza di accordo, ciascun Pretendente indica un gioco e i due giochi vengono inseriti nella Ruota Tavologiochistica.</li><li>L'ordine di disputa dei giochi viene stabilito di comune accordo. In assenza di accordo è determinato mediante Ruota Tavologiochistica: il gioco estratto viene rimosso e occupa il primo posto ancora disponibile, procedendo fino alla definizione dell'intera sequenza.</li><li>L'esito della Ruota è definitivo e non è impugnabile per sfortuna, ingiustizia percepita, sospetto complotto o «era ovvio che usciva il tuo».</li></ol></section>
+<h2 class="rules-title" id="titolo-iv">TITOLO IV - LA PARTITA DEI POLLI</h2><div class="rule-feature"><img src="assets/images/image_02.webp" alt="Partita dei Polli"><section class="rule-article"><h3>Art. 7 - Definizione e validità</h3><ol><li>Quando viene introdotto un gioco mai precedentemente giocato da entrambi, la prima partita assume automaticamente la denominazione ufficiale di <b>PARTITA DEI POLLI</b>.</li><li>La Partita dei Polli è valida ai fini del Torneo esclusivamente se vinta dal Pretendente in svantaggio nel numero di Tornei vinti nella Stagione.</li><li>Se vinta dal Pretendente in vantaggio, non viene conteggiata ai fini del Torneo e il gioco viene disputato nuovamente.</li><li>Lo status di Pollo, una volta perduto per un determinato gioco, non può essere riacquisito per alcuna ragione. Il decorso del tempo, la perdita di memoria delle regole, l'assenza prolungata dal tavolo o la dichiarazione «non mi ricordo più un cazzo» non costituiscono titolo valido per il ripristino dello status.</li></ol></section></div>
+<h2 class="rules-title" id="titolo-v">TITOLO V - LA CLASSIFICA STAGIONALE</h2><section class="rule-article"><h3>Art. 8 - Vittoria del Torneo</h3><ol><li>Il vincitore di ciascun Torneo ottiene una vittoria di Torneo.</li><li>La vittoria è attribuita al Pretendente che abbia vinto il 50% + 1 dei giochi previsti dal Torneo.</li><li>Ai fini della Coppa non rileva il margine con cui il Torneo viene vinto.</li><li>Le partite successive alla matematica assegnazione del Torneo rimangono valide ai fini degli Award e delle statistiche ufficiali.</li></ol></section><section class="rule-article"><h3>Art. 9 - Coppa Tavologiochistica e parità</h3><ol><li>Al termine della Stagione vince la Coppa il Pretendente con il maggior numero di Tornei vinti.</li><li>In caso di parità non si applica alcun criterio statistico di spareggio.</li><li>La Coppa viene assegnata mediante una <b>Finalissima Bottasecchistica Tavologiochistica</b>, costituita da una partita secca.</li><li>Ciascun Pretendente seleziona tre giochi. I sei giochi vengono inseriti, con pari dignità e probabilità, nella Ruota Tavologiochistica.</li><li>Il gioco estratto è il campo di battaglia definitivo. Il vincitore della partita è proclamato Campione Tavologiochistico della Stagione.</li><li>Né il numero complessivo di singole partite vinte né gli Award possono essere utilizzati come spareggio.</li></ol></section>
+<h2 class="rules-title" id="titolo-vi">TITOLO VI - IL SISTEMA TAVOLOMETRICO E GLI AWARD</h2><section class="rule-article"><h3>Art. 10 - Tabella Parametristica</h3><ol><li>È istituita la Tabella Parametristica dei Giochi del Torneo Tavologiochistico Avanguardistico.</li><li>Ogni gioco è classificato da 1 a 5 secondo Logica, Strategia, Tattica, Duello, Fortuna, Pianificazione, Gestione e Lettura dell'avversario.</li><li>La Tabella riporta inoltre tempo indicativo, classificazione cartogiochistica e coefficienti dei quattro Award.</li><li>I coefficienti sono: Strategistico = 40% Strategia + 30% Pianificazione + 20% Gestione + 10% Logica; Tatticistico = 50% Tattica + 30% Logica + 20% Gestione; Duellistico = 50% Duello + 30% Lettura avversario + 20% Tattica; Culistico = Fortuna.</li><li>È vietata la modifica retroattiva dei parametri a seguito di risultati statisticamente scomodi, politicamente inopportuni o offensivi per l'autostima.</li></ol></section>
+<div class="formula-school"><h3>COME SI CALCOLANO I 4 COEFFICIENTI - VERSIONE A PROVA DI POLLO</h3><p class="formula-intro">Prima assegna al gioco un voto da <b>1 a 5</b> per gli 8 parametri. Poi calcola i quattro numeri sotto. Le percentuali sono semplicemente dei pesi: <b>moltiplica il voto per la percentuale e somma i risultati</b>.</p>
+<div class="formula-card"><h4>Premio Strategistico</h4><div class="formula">Strategistico = Strategia × 0,40 + Pianificazione × 0,30 + Gestione × 0,20 + Logica × 0,10</div><div class="formula-example"><b>Esempio:</b> Strategia 5, Pianificazione 4, Gestione 3, Logica 4 → 5×0,40 + 4×0,30 + 3×0,20 + 4×0,10 = <b>4,20</b>.</div></div>
+<div class="formula-card"><h4>Premio Tatticistico</h4><div class="formula">Tatticistico = Tattica × 0,50 + Logica × 0,30 + Gestione × 0,20</div><div class="formula-example"><b>Esempio:</b> Tattica 5, Logica 4, Gestione 3 → 5×0,50 + 4×0,30 + 3×0,20 = <b>4,30</b>.</div></div>
+<div class="formula-card"><h4>Premio Duellistico</h4><div class="formula">Duellistico = Duello × 0,50 + Lettura avversario × 0,30 + Tattica × 0,20</div><div class="formula-example"><b>Esempio:</b> Duello 4, Lettura 5, Tattica 5 → 4×0,50 + 5×0,30 + 5×0,20 = <b>4,50</b>.</div></div>
+<div class="formula-card"><h4>Premio Culistico</h4><div class="formula">Culistico = Fortuna</div><div class="formula-example">Qui non devi fare praticamente niente. Se Fortuna è 4, il coefficiente Culistico è <b>4,00</b>. Fine. Anche il Pollo ce la può fare.</div></div>
+<div class="chicken-summary"><b>POI, A FINE STAGIONE:</b><br>
+1. <b>Tutte le vittorie danno punti</b> per l'Award: per ogni vittoria si prende il coefficiente di quel gioco, anche se è basso.<br>
+2. Per essere ammesso a concorrere a uno specifico Award devi però aver ottenuto almeno <b>3 vittorie in giochi con coefficiente di quell'Award superiore a 3,00</b>. Questa è solo la soglia di ammissione: non decide quali punti entrano nel calcolo.<br>
+3. Una volta superata la soglia, somma i coefficienti dell'Award di <b>tutte le tue vittorie</b> e dividi per il <b>numero totale delle tue vittorie</b>.<br>
+<b>Esempio:</b> hai 5 vittorie e, per lo Strategistico, valgono 4,20 + 3,50 + 4,00 + 2,20 + 1,80 = 15,70. Hai almeno 3 vittorie sopra 3,00, quindi sei eleggibile. 15,70 ÷ 5 = <b>Indice Strategistico 3,14</b>.<br>
+4. Tra i Pretendenti eleggibili, chi ha l'Indice più alto vince l'Award. In questo modo <b>tutti i punti contano</b>, ma vincere più partite non garantisce automaticamente l'Award.</div></div>
+<section class="rule-article"><h3>Art. 11 - Principio dell'Indice Award</h3><ol>
+<li>Ai fini del calcolo dell'Indice Award, <b>ogni vittoria conseguita nella Stagione attribuisce il coefficiente del relativo Award previsto per il gioco disputato</b>.</li>
+<li>Per poter concorrere a uno specifico Award, il Pretendente deve aver ottenuto almeno <b>tre vittorie in giochi il cui coefficiente del medesimo Award sia superiore a 3,00</b>.</li>
+<li>Il requisito di cui al comma precedente costituisce esclusivamente condizione di eleggibilità: una volta raggiunto, <b>nel calcolo dell'Indice concorrono i coefficienti di tutte le vittorie</b>, indipendentemente dal loro valore.</li>
+<li>L'Indice Award è determinato dividendo la <b>somma dei coefficienti dell'Award ottenuti in tutte le vittorie</b> per il <b>numero totale delle vittorie</b> del Pretendente.</li>
+<li>L'Award è assegnato, tra i Pretendenti eleggibili, a quello con l'Indice più elevato. Se uno solo soddisfa il requisito minimo, l'Award spetta a quest'ultimo; se nessuno lo soddisfa, l'Award non viene assegnato.</li>
+</ol></section>
+<div class="rule-feature"><img src="assets/images/image_03.webp"><section class="rule-article"><h3>Art. 12 - Premio Strategistico</h3><ol><li>Riconosce il Pretendente più efficace nei giochi in cui prevalgono costruzione del piano, sviluppo a medio-lungo termine e gestione delle risorse.</li><li>Il valore strategico di ciascuna vittoria è determinato dalla ponderazione stabilita dalla Tabella Parametristica.</li><li>L'assegnazione avviene mediante l'Indice Award di cui all'Art. 11.</li></ol></section></div><div class="rule-feature reverse"><section class="rule-article"><h3>Art. 13 - Premio Tatticistico</h3><ol><li>Riconosce il Pretendente più efficace nel risolvere la situazione presente, sfruttando opportunità, vincoli e risorse nel momento in cui si manifestano.</li><li>Il valore tattico di ciascuna vittoria è determinato dalla ponderazione stabilita dalla Tabella Parametristica.</li><li>L'assegnazione avviene mediante l'Indice Award di cui all'Art. 11.</li></ol></section><img src="assets/images/image_04.webp"></div><div class="rule-feature"><img src="assets/images/image_05.webp"><section class="rule-article"><h3>Art. 14 - Premio Duellistico</h3><ol><li>Riconosce il Pretendente che abbia dimostrato la maggiore efficacia nel confronto diretto con l'altro.</li><li>Il valore duellistico è determinato secondo la ponderazione: 50% Duello + 30% Lettura dell'avversario + 20% Tattica.</li><li>L'assegnazione avviene mediante l'Indice Award di cui all'Art. 11.</li></ol></section></div><div class="rule-feature reverse"><section class="rule-article"><h3>Art. 15 - Premio Culistico</h3><ol><li>Riconosce, con la serietà statistica che la materia merita, le vittorie rilevanti nei giochi caratterizzati da componente aleatoria.</li><li>Il coefficiente coincide con il valore Fortuna attribuito al gioco.</li><li>Sono rilevanti le vittorie con Fortuna almeno 3 e resta necessario il requisito minimo di tre vittorie rilevanti.</li><li>L'Indice Culistico è la media del valore Fortuna nelle vittorie rilevanti.</li><li>L'assegnazione non costituisce prova scientifica dell'effettiva fortuna del vincitore, ma prova regolamentare più che sufficiente per rinfacciargliela.</li></ol></section><img src="assets/images/image_06.webp"></div>
+<h2 class="rules-title" id="titolo-vii">TITOLO VII - I PRINCIPI GENERALI</h2><section class="rule-article"><h3>Art. 16 - Parità regolamentare</h3><ol><li>Salvo le specifiche disposizioni poste a tutela del Pretendente in svantaggio, entrambi godono dei medesimi diritti tavologiochistici.</li><li>Il vantaggio acquisito deve essere conseguenza del gioco e non del Regolamento.</li></ol></section><section class="rule-article"><h3>Art. 17 - Spirito della competizione</h3><ol><li>La Stagione persegue l'individuazione del miglior Tavologiocatore, la misurazione delle specializzazioni strategiche, tattiche e duellistiche, l'accertamento statistico del culo e la progressiva costruzione di un albo e di una tradizione tavologiochistica.</li><li>La rivalità deve essere sufficientemente seria da rendere importante vincere, ma non abbastanza seria da giustificare comportamenti antisportivi.</li></ol></section><section class="rule-article"><h3>Art. 18 - Norma fondamentale</h3><ol><li>In caso di controversia interpretativa prevalgono nell'ordine: buon senso; accordo tra i Pretendenti; metodo casuale concordato; Ruota Tavologiochistica.</li><li>È espressamente vietato modificare retroattivamente una regola perché «se lo sapevo prima giocavo diversamente».</li></ol></section>
+<h2 class="rules-title" id="ratifica">RATIFICA DELLA STAGIONE</h2><div class="ratifica-web"><p>Con la sottoscrizione del presente documento, i Pretendenti dichiarano di aver letto, compreso e accettato il Regolamento e di impegnarsi a non fingere di non ricordarne le parti sfavorevoli al momento opportuno.</p><div class="ratifica-players"><div class="ratifica-player">PRETENDENTE I<span id="regP1">—</span></div><div class="ratifica-player">PRETENDENTE II<span id="regP2">—</span></div></div><div class="ratifica-dates"><div class="ratifica-date">DATA INIZIO STAGIONE<span id="regStart">Da stabilire</span></div><div class="ratifica-date">DATA FINE STAGIONE<span id="regEnd">Da stabilire</span></div><div class="ratifica-date">DATA PREVISTA PREMIAZIONE<span id="regAward">Da stabilire</span></div></div><p style="margin-top:16px;font-size:13px">Le date sopra indicate sono derogabili esclusivamente di comune accordo per le esigenze previste dall'Art. 2, comma 3, o per ulteriori circostanze che i Pretendenti riescano a descrivere con sufficiente faccia seria.</p></div></article></div></section>
+<section class="app-screen" id="screen-guide"><div class="reader-shell"><article class="reader-card"><h1>Come funziona</h1><h2>Avviare una stagione</h2><p>Premi <b>Nuovo Torneo</b>, inserisci i nomi dei due Pretendenti e la data di inizio. Data di fine e premiazione possono essere lasciate vuote e decise più avanti.</p><h2>Usare la Ruota</h2><p>Inserisci i giochi da tastiera. Ogni gioco compare due volte e gli spicchi vengono rimescolati automaticamente. La Ruota può determinare il Gioco Dispari, l'ordine di gioco e la Finalissima secondo il Regolamento.</p><p>Quando esce un gioco premi <b>GIOCHIAMO</b>; al termine indica chi ha vinto. Storico e punteggio vengono aggiornati e salvati sul dispositivo.</p><h2>Stampare il Regolamento</h2><div class="print-help"><b>File già imposto a libretto:</b><br>1. usa fogli A4;<br>2. stampa fronte/retro;<br>3. seleziona <b>ribaltamento sul lato corto</b>;<br>4. piega i fogli a metà per ottenere il libretto A5.</div><p><button id="downloadRules2">SCARICA PDF DA STAMPARE</button></p><h2>Tabella Parametristica</h2><p><b>La tabella compilata qui sotto è solo un esempio.</b> Serve a capire come appare una collezione già parametrizzata. La versione destinata alla stampa è invece completamente vuota, così ognuno inserisce i propri giochi.</p><div class="table-actions">
+<button id="downloadTable">SCARICA TABELLA VUOTA DA STAMPARE</button>
+<button class="secondary" id="downloadTableExample">SCARICA ESEMPIO COMPILATO</button>
+<button class="secondary" data-go="calculator">CALCOLATORE AWARDS</button>
+</div>
+<div class="calc-link-box"><b>Devi compilare la tabella?</b><br>
+Apri il <b>Calcolatore Awards</b>: inserisci i valori 1–5 del gioco e lui calcola automaticamente Strategistico, Tatticistico, Duellistico e Culistico. Poi copi i risultati nella riga della tabella vuota.</div><div class="table-example"><table><thead><tr><th>Gioco</th><th>Carte</th><th>Log</th><th>Str</th><th>Tat</th><th>Due</th><th>For</th><th>Pia</th><th>Ges</th><th>Let</th><th>Min</th><th>Strategistico</th><th>Tatticistico</th><th>Duellistico</th><th>Culistico</th></tr></thead><tbody><tr><td>Splendor</td><td>NO</td><td>4</td><td>5</td><td>4</td><td>4</td><td>1</td><td>4</td><td>5</td><td>4</td><td>25-30</td><td>4,6</td><td>4,2</td><td>4,0</td><td>1,0</td></tr><tr><td>Jaipur</td><td>NO</td><td>4</td><td>4</td><td>5</td><td>5</td><td>3</td><td>3</td><td>4</td><td>5</td><td>25-30</td><td>3,7</td><td>4,5</td><td>5,0</td><td>3,0</td></tr><tr><td>Sagrada</td><td>NO</td><td>5</td><td>3</td><td>5</td><td>2</td><td>4</td><td>3</td><td>3</td><td>2</td><td>30-40</td><td>3,2</td><td>4,6</td><td>2,6</td><td>4,0</td></tr><tr><td>Quarto</td><td>NO</td><td>5</td><td>4</td><td>5</td><td>5</td><td>1</td><td>4</td><td>1</td><td>5</td><td>10-20</td><td>3,5</td><td>4,2</td><td>5,0</td><td>1,0</td></tr><tr><td>Love Letter</td><td>NO</td><td>2</td><td>2</td><td>4</td><td>5</td><td>5</td><td>1</td><td>1</td><td>5</td><td>15-20</td><td>1,5</td><td>2,8</td><td>4,8</td><td>5,0</td></tr></tbody></table></div><div class="award-calc-callout">
+  <div class="copy">
+    <b>DEVI PARAMETRIZZARE UN GIOCO?</b>
+    <span>Non fare i conti a mano: inserisci i valori 1–5 nel Calcolatore Awards e copia direttamente i quattro coefficienti nella tabella.</span>
+  </div>
+  <button data-go="calculator">APRI CALCOLATORE AWARDS</button>
+</div></article></div></section>
+
+<section class="app-screen" id="screen-calculator">
+  <div class="calc-shell">
+    <div class="calc-hero">
+      <div class="kicker">FEDERAZIONE TAVOLOGIOCHISTICA</div>
+      <h1>CALCOLATORE AWARDS</h1>
+      <p>Compila la scheda di un gioco. Tu assegni soltanto i parametri base da 1 a 5; i quattro coefficienti del gioco vengono calcolati automaticamente e sono pronti da riportare nella Tabella Parametristica. L'Indice stagionale degli Award viene invece determinato a fine Stagione secondo l'Art. 11.</p>
+    </div>
+
+    <div class="calc-card">
+      <h2>1 · Identifica il gioco</h2>
+      <p class="sub">Questi dati non cambiano i calcoli, ma ti permettono di avere una riga completa da copiare nella tabella.</p>
+      <div class="calc-grid">
+        <div class="calc-field"><label>NOME DEL GIOCO</label><input id="calcGame" type="text" placeholder="Es. Splendor"></div>
+        <div class="calc-field"><label>CARTE</label><select id="calcCards"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+        <div class="calc-field"><label>TEMPO INDICATIVO</label><input id="calcTime" type="text" placeholder="Es. 30-45 min"></div>
+      </div>
+    </div>
+
+    <div class="calc-card">
+      <h2>2 · Assegna i parametri base</h2>
+      <p class="sub">Per ogni voce scegli un valore da <b>1</b> a <b>5</b>: 1 = incide pochissimo, 3 = incide in modo evidente, 5 = è centrale nel gioco.</p>
+      <div class="calc-params">
+        <div class="calc-param"><label>LOGICA</label><select id="cpLog"></select></div>
+        <div class="calc-param"><label>STRATEGIA</label><select id="cpStr"></select></div>
+        <div class="calc-param"><label>TATTICA</label><select id="cpTat"></select></div>
+        <div class="calc-param"><label>DUELLO</label><select id="cpDue"></select></div>
+        <div class="calc-param"><label>FORTUNA</label><select id="cpFor"></select></div>
+        <div class="calc-param"><label>PIANIFICAZIONE</label><select id="cpPia"></select></div>
+        <div class="calc-param"><label>GESTIONE</label><select id="cpGes"></select></div>
+        <div class="calc-param"><label>LETTURA AVVERSARIO</label><select id="cpLet"></select></div>
+      </div>
+
+      <div class="calc-chicken">
+        <b>Metodo a prova di Pollo:</b> non devi inventare i quattro valori finali. Valuta soltanto gli otto parametri sopra. Il calcolatore applica da solo le formule ufficiali.<br>
+        <b>Strategistico</b> = 40% Strategia + 30% Pianificazione + 20% Gestione + 10% Logica.<br>
+        <b>Tatticistico</b> = 50% Tattica + 30% Logica + 20% Gestione.<br>
+        <b>Duellistico</b> = 50% Duello + 30% Lettura avversario + 20% Tattica.<br>
+        <b>Culistico</b> = Fortuna. Sì, qui la matematica è particolarmente sofisticata.
+      </div>
+    </div>
+
+    <div class="calc-card">
+      <h2>3 · Risultato</h2>
+      <p class="sub">I valori sono arrotondati a un decimale, esattamente nel formato da riportare nella Tabella Parametristica.</p>
+      <div class="calc-results">
+        <div class="award-result award-strat"><b>STRATEGISTICO</b><strong id="crStrat">3,0</strong><small>Strategia · Pianificazione · Gestione · Logica</small></div>
+        <div class="award-result award-tatt"><b>TATTICISTICO</b><strong id="crTatt">3,0</strong><small>Tattica · Logica · Gestione</small></div>
+        <div class="award-result award-duel"><b>DUELLISTICO</b><strong id="crDuel">3,0</strong><small>Duello · Lettura avversario · Tattica</small></div>
+        <div class="award-result award-culo"><b>CULISTICO</b><strong id="crCulo">3,0</strong><small>Uguale al valore Fortuna</small></div>
+      </div>
+
+      <div class="calc-chicken" style="margin-top:18px">
+        <b>Attenzione: coefficiente del gioco ≠ Indice stagionale.</b><br>
+        Questo strumento calcola i quattro valori da scrivere nella Tabella Parametristica. A fine Stagione, per concorrere a un Award servono almeno 3 vittorie in giochi con quel coefficiente &gt; 3,00; raggiunta la soglia, nell'Indice entrano però i coefficienti di <b>tutte</b> le vittorie.
+      </div>
+
+      <div class="calc-row-output">
+        <div class="caption">RIGA PRONTA DA TRASCRIVERE NELLA TABELLA</div>
+        <code id="calcRowPreview">—</code>
+      </div>
+
+      <div class="calc-actions">
+        <button id="copyCalcRow">COPIA RIGA</button>
+        <button class="secondary" id="resetCalculator">AZZERA SCHEDA</button>
+        <button class="secondary" data-go="guide">TORNA ALLA TABELLA</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div class="tournament-overlay hidden" id="tournamentOverlay">
+  <div class="tournament-popup" role="dialog" aria-modal="true">
+    <div class="kicker">VERBALE UFFICIALE DEL TORNEO</div>
+    <div class="coin" id="tournamentCoin">🏆</div>
+    <h2 id="tournamentModalTitle">Fine Torneo</h2>
+    <p id="tournamentModalText"></p>
+    <div class="tournament-choice hidden" id="tournamentChoice">
+      <button id="tournamentP1"></button>
+      <button id="tournamentP2"></button>
+    </div>
+    <div style="margin-top:18px"><button class="secondary" id="closeTournamentModal">CHIUDI</button></div>
+  </div>
+</div>
+
+<audio id="grandTableaux" preload="auto" loop>
+  <source src="assets/audio/audio_01.m4a" type="audio/mp4">
+</audio>
+<audio id="royalWheelOath" preload="auto">
+  <source src="assets/audio/audio_02.m4a" type="audio/mp4">
+</audio>
+
+<script src="js/app.js"></script>
+
+</body>
+</html>
