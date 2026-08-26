@@ -232,42 +232,6 @@
     goScreen('home');
   }
 
-  // Splash FUORISCALA: animazione a zoom guidata via requestAnimationFrame,
-  // identica a quella di Racing Dynasty (nessuna keyframe CSS complessa:
-  // controllo totale fotogramma per fotogramma per evitare sfarfallii).
-  function initStudioSplashLogo() {
-    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const logo = document.getElementById('splashLogoImg');
-    if (logo && !reduced) {
-      const duration = 900;
-      function easeInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
-      const overshootPeak = 3.6;
-      function tick(now, startTime) {
-        const elapsed = now - startTime;
-        const t = Math.min(1, elapsed / duration);
-        const scale = t < 0.5
-          ? 0.3 + (overshootPeak - 0.3) * easeInOutCubic(t / 0.5)
-          : overshootPeak - (overshootPeak - 1) * easeInOutCubic((t - 0.5) / 0.5);
-        const opacity = Math.min(1, elapsed / 180);
-        logo.style.transform = `scale(${scale.toFixed(4)})`;
-        logo.style.opacity = String(opacity);
-        if (t < 1) requestAnimationFrame(now2 => tick(now2, startTime));
-      }
-      setTimeout(() => {
-        requestAnimationFrame(now => tick(now, now));
-      }, 100);
-    } else if (logo) {
-      logo.style.opacity = '1';
-      logo.style.transform = 'scale(1)';
-    }
-
-    setTimeout(() => {
-      const hint = document.getElementById('splashSkipHint');
-      if (hint && !introAdvanced) hint.classList.add('splash-hint-blink');
-    }, 5000);
-  }
-  initStudioSplashLogo();
-
   splashStage.addEventListener('click', advanceSplash);
   splashStage.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); advanceSplash(); }
