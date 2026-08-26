@@ -3,14 +3,14 @@ name: Configure PWA icon
 on:
   push:
     branches: [main]
-    paths:
-      - '.github/workflows/configure-pwa-icon.yml'
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
   configure:
+    if: ${{ !contains(github.event.head_commit.message, 'Use image_01 as site and install icon') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,7 +23,6 @@ jobs:
 
           index = Path('index.html')
           html = index.read_text(encoding='utf-8')
-
           old = '<title>Ruota Tavologiochistica</title>\n<link rel="stylesheet" href="css/app.css">'
           head_lines = [
               '<title>Stagione Tavologiochistica Avanguardistica</title>',
@@ -38,18 +37,15 @@ jobs:
               '<link rel="stylesheet" href="css/app.css">',
           ]
           new = '\n'.join(head_lines)
-
           if old in html:
               html = html.replace(old, new, 1)
           elif 'rel="manifest" href="manifest.webmanifest"' not in html:
               raise SystemExit('Head structure not recognized; refusing to modify index.html')
-
           index.write_text(html, encoding='utf-8')
 
           icon = Path('assets/images/image_01.png')
           if not icon.exists():
               raise SystemExit('assets/images/image_01.png not found')
-
           shutil.copyfile(icon, 'favicon.png')
           shutil.copyfile(icon, 'apple-touch-icon.png')
 
@@ -62,14 +58,7 @@ jobs:
               'display': 'standalone',
               'background_color': '#0d1729',
               'theme_color': '#0d1729',
-              'icons': [
-                  {
-                      'src': 'assets/images/image_01.png',
-                      'sizes': 'any',
-                      'type': 'image/png',
-                      'purpose': 'any'
-                  }
-              ]
+              'icons': [{'src': 'assets/images/image_01.png', 'sizes': 'any', 'type': 'image/png', 'purpose': 'any'}]
           }
           Path('manifest.webmanifest').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 
