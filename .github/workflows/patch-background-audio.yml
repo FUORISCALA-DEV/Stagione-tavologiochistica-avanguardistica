@@ -1,0 +1,100 @@
+name: Patch background audio
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Patch audio visibility behavior
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('js/app.js')
+          s = p.read_text(encoding='utf-8')
+          marker = '// AUDIO_BACKGROUND_VISIBILITY_GUARD'
+
+          if marker in s:
+              print('Audio visibility guard already present.')
+              raise SystemExit(0)
+
+          needle = "  updateAwardCalculator();\n\n\n  renderHistory();\n  renderAll();\n})();"
+          insert = """  updateAwardCalculator();
+
+  // AUDIO_BACKGROUND_VISIBILITY_GUARD
+  // Ferma immediatamente la musica quando la pagina/app non e' in primo piano.
+  // Quando torna visibile riprende solo le tracce che stavano suonando.
+  let audioSuspendedByBackground = false;
+  let grandWasPlaying = false;
+  let royalWasPlaying = false;
+
+  function suspendAudioForBackground() {
+    if (audioSuspendedByBackground) return;
+    audioSuspendedByBackground = true;
+    grandWasPlaying = !grandTableaux.paused && !grandTableaux.ended;
+    royalWasPlaying = !royalWheelOath.paused && !royalWheelOath.ended;
+    grandTableaux.pause();
+    royalWheelOath.pause();
+  }
+
+  function resumeAudioFromBackground() {
+    if (!audioSuspendedByBackground || document.hidden) return;
+    audioSuspendedByBackground = false;
+
+    if (grandWasPlaying) grandTableaux.play().catch(() => {});
+    if (royalWasPlaying) royalWheelOath.play().catch(() => {});
+
+    grandWasPlaying = false;
+    royalWasPlaying = false;
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) suspendAudioForBackground();
+    else resumeAudioFromBackground();
+  });
+  window.addEventListener('pagehide', suspendAudioForBackground);
+  window.addEventListener('pageshow', () => {
+    if (!document.hidden) resumeAudioFromBackground();
+  });
+  window.addEventListener('blur', suspendAudioForBackground);
+  window.addEventListener('focus', () => {
+    if (!document.hidden) resumeAudioFromBackground();
+  });
+
+
+  renderHistory();
+  renderAll();
+})();"""
+
+          if needle not in s:
+              raise SystemExit('Patch target not found in js/app.js')
+
+          p.write_text(s.replace(needle, insert), encoding='utf-8')
+          print('Background audio guard inserted.')
+          PY
+
+      - name: Syntax check
+        run: node --check js/app.js
+
+      - name: Commit patch
+        shell: bash
+        run: |
+          if git diff --quiet -- js/app.js; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/app.js
+          git commit -m "Pause audio when app is not visible"
+          git push
