@@ -1127,6 +1127,46 @@
   updateAwardCalculator();
 
 
+  // AUDIO_BACKGROUND_VISIBILITY_GUARD
+  // Ferma immediatamente la musica quando la pagina/app non e' in primo piano.
+  // Quando torna visibile riprende solo le tracce che stavano suonando.
+  let audioSuspendedByBackground = false;
+  let grandWasPlaying = false;
+  let royalWasPlaying = false;
+
+  function suspendAudioForBackground() {
+    if (audioSuspendedByBackground) return;
+    audioSuspendedByBackground = true;
+    grandWasPlaying = !grandTableaux.paused && !grandTableaux.ended;
+    royalWasPlaying = !royalWheelOath.paused && !royalWheelOath.ended;
+    grandTableaux.pause();
+    royalWheelOath.pause();
+  }
+
+  function resumeAudioFromBackground() {
+    if (!audioSuspendedByBackground || document.hidden) return;
+    audioSuspendedByBackground = false;
+
+    if (grandWasPlaying) grandTableaux.play().catch(() => {});
+    if (royalWasPlaying) royalWheelOath.play().catch(() => {});
+
+    grandWasPlaying = false;
+    royalWasPlaying = false;
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) suspendAudioForBackground();
+    else resumeAudioFromBackground();
+  });
+  window.addEventListener('pagehide', suspendAudioForBackground);
+  window.addEventListener('pageshow', () => {
+    if (!document.hidden) resumeAudioFromBackground();
+  });
+  window.addEventListener('blur', suspendAudioForBackground);
+  window.addEventListener('focus', () => {
+    if (!document.hidden) resumeAudioFromBackground();
+  });
+
   renderHistory();
   renderAll();
 })();
