@@ -24,6 +24,53 @@
     <div class="splash-tap" id="splashSkipHint">TOCCA PER CONTINUARE</div>
   </div>
 </div>
+<script>
+// Animazione logo splash FUORISCALA: completamente autonoma, non dipende
+// da app.js. Se un qualsiasi altro script della pagina fallisce, questa
+// gira comunque, perché è agganciata subito dopo il markup della splash.
+(function () {
+  try {
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var logo = document.getElementById('splashLogoImg');
+    var hint = document.getElementById('splashSkipHint');
+    var stage = document.getElementById('splashStage');
+
+    function easeInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+
+    if (logo && !reduced) {
+      var duration = 900;
+      var overshootPeak = 3.6;
+      function tick(now, startTime) {
+        var elapsed = now - startTime;
+        var t = Math.min(1, elapsed / duration);
+        var scale = t < 0.5
+          ? 0.3 + (overshootPeak - 0.3) * easeInOutCubic(t / 0.5)
+          : overshootPeak - (overshootPeak - 1) * easeInOutCubic((t - 0.5) / 0.5);
+        var opacity = Math.min(1, elapsed / 180);
+        logo.style.transform = 'scale(' + scale.toFixed(4) + ')';
+        logo.style.opacity = String(opacity);
+        if (t < 1) requestAnimationFrame(function (now2) { tick(now2, startTime); });
+      }
+      setTimeout(function () {
+        requestAnimationFrame(function (now) { tick(now, now); });
+      }, 100);
+    } else if (logo) {
+      logo.style.opacity = '1';
+      logo.style.transform = 'scale(1)';
+    }
+
+    setTimeout(function () {
+      if (hint && stage && !stage.classList.contains('exiting') && !stage.classList.contains('hidden')) {
+        hint.classList.add('splash-hint-blink');
+      }
+    }, 5000);
+  } catch (err) {
+    var fallbackLogo = document.getElementById('splashLogoImg');
+    if (fallbackLogo) { fallbackLogo.style.opacity = '1'; }
+    console.error('Splash logo init error:', err);
+  }
+})();
+</script>
 <div class="intro-stage portal-stage" id="portalStage">
   <div class="portal-inner">
     <img class="portal-logo" src="assets/images/image_01.png" alt="Stagione Tavologiochistica Avanguardistica">
