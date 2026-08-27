@@ -12,7 +12,7 @@
 <link rel="icon" type="image/png" href="assets/images/image_01.png">
 <link rel="apple-touch-icon" href="assets/images/image_01.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="css/app.css?v=7">
+<link rel="stylesheet" href="css/app.css?v=8">
 </head>
 <body class="intro-locked">
 <div class="intro-stage splash-stage" id="splashStage" role="button" tabindex="0" aria-label="Tocca per continuare">
@@ -62,22 +62,26 @@
     setTimeout(function () {
       if (hint && stage && !stage.classList.contains('exiting') && !stage.classList.contains('hidden')) {
         hint.classList.add('splash-hint-blink');
-        // Lampeggio pilotato via JS (non CSS animation): alcuni browser mobile
-        // sopprimono le animazioni CSS quando e' attivo "Riduci movimento" nelle
-        // impostazioni di sistema, ignorando anche le regole dell'autore. Un
-        // setInterval che tocca style.opacity direttamente non viene toccato da
-        // quella soppressione, quindi il lampeggio si vede sempre.
-        var on = true;
-        var blinkTimer = setInterval(function () {
-          if (!hint || stage.classList.contains('exiting') || stage.classList.contains('hidden')) {
-            clearInterval(blinkTimer);
-            return;
-          }
-          on = !on;
-          hint.style.opacity = on ? '1' : '0.08';
-        }, 450);
+        // Pulsazione morbida via JS (non CSS animation): l'animazione CSS
+        // studioSplashFadeIn di base ha fill-mode forwards, che su alcuni
+        // browser mobile "vince" comunque su qualunque animazione CSS
+        // successiva assegnata via classe — per questo pilotiamo l'opacita'
+        // direttamente frame per frame con requestAnimationFrame.
+        var blinkStart = null;
+        var period = 1.8; // secondi per ciclo completo di respiro
+        var minOpacity = 0.32;
+        function blinkPulse(now) {
+          if (!hint || stage.classList.contains('exiting') || stage.classList.contains('hidden')) return;
+          if (blinkStart === null) blinkStart = now;
+          var elapsed = (now - blinkStart) / 1000;
+          var wave = (Math.sin((elapsed / period) * Math.PI * 2 - Math.PI / 2) + 1) / 2;
+          var opacity = minOpacity + wave * (1 - minOpacity);
+          hint.style.opacity = opacity.toFixed(3);
+          requestAnimationFrame(blinkPulse);
+        }
+        requestAnimationFrame(blinkPulse);
       }
-    }, 0); // TEST: era 5000, temporaneamente 0 per diagnosi
+    }, 5000);
   } catch (err) {
     var fallbackLogo = document.getElementById('splashLogoImg');
     if (fallbackLogo) { fallbackLogo.style.opacity = '1'; }
@@ -311,7 +315,7 @@ Apri il <b>Calcolatore Awards</b>: inserisci i valori 1–5 del gioco e lui calc
   <source src="assets/audio/audio_02.m4a" type="audio/mp4">
 </audio>
 
-<script src="js/app.js?v=7"></script>
+<script src="js/app.js?v=8"></script>
 
 </body>
 </html>
