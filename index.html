@@ -12,7 +12,7 @@
 <link rel="icon" type="image/png" href="assets/images/image_01.png">
 <link rel="apple-touch-icon" href="assets/images/image_01.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="css/app.css?v=5">
+<link rel="stylesheet" href="css/app.css?v=6">
 </head>
 <body class="intro-locked">
 <div class="intro-stage splash-stage" id="splashStage" role="button" tabindex="0" aria-label="Tocca per continuare">
@@ -62,6 +62,20 @@
     setTimeout(function () {
       if (hint && stage && !stage.classList.contains('exiting') && !stage.classList.contains('hidden')) {
         hint.classList.add('splash-hint-blink');
+        // Lampeggio pilotato via JS (non CSS animation): alcuni browser mobile
+        // sopprimono le animazioni CSS quando e' attivo "Riduci movimento" nelle
+        // impostazioni di sistema, ignorando anche le regole dell'autore. Un
+        // setInterval che tocca style.opacity direttamente non viene toccato da
+        // quella soppressione, quindi il lampeggio si vede sempre.
+        var on = true;
+        var blinkTimer = setInterval(function () {
+          if (!hint || stage.classList.contains('exiting') || stage.classList.contains('hidden')) {
+            clearInterval(blinkTimer);
+            return;
+          }
+          on = !on;
+          hint.style.opacity = on ? '1' : '0.08';
+        }, 450);
       }
     }, 0); // TEST: era 5000, temporaneamente 0 per diagnosi
   } catch (err) {
@@ -297,7 +311,7 @@ Apri il <b>Calcolatore Awards</b>: inserisci i valori 1–5 del gioco e lui calc
   <source src="assets/audio/audio_02.m4a" type="audio/mp4">
 </audio>
 
-<script src="js/app.js?v=5"></script>
+<script src="js/app.js?v=6"></script>
 
 </body>
 </html>
