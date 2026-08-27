@@ -12,7 +12,7 @@
 <link rel="icon" type="image/png" href="assets/images/image_01.png">
 <link rel="apple-touch-icon" href="assets/images/image_01.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="css/app.css?v=4">
+<link rel="stylesheet" href="css/app.css?v=5">
 </head>
 <body class="intro-locked">
 <div class="intro-stage splash-stage" id="splashStage" role="button" tabindex="0" aria-label="Tocca per continuare">
@@ -63,7 +63,7 @@
       if (hint && stage && !stage.classList.contains('exiting') && !stage.classList.contains('hidden')) {
         hint.classList.add('splash-hint-blink');
       }
-    }, 5000);
+    }, 0); // TEST: era 5000, temporaneamente 0 per diagnosi
   } catch (err) {
     var fallbackLogo = document.getElementById('splashLogoImg');
     if (fallbackLogo) { fallbackLogo.style.opacity = '1'; }
@@ -297,7 +297,7 @@ Apri il <b>Calcolatore Awards</b>: inserisci i valori 1–5 del gioco e lui calc
   <source src="assets/audio/audio_02.m4a" type="audio/mp4">
 </audio>
 
-<script src="js/app.js?v=4"></script>
+<script src="js/app.js?v=5"></script>
 
 </body>
 </html>
